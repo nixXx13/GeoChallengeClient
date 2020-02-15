@@ -1,24 +1,26 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 public class GeoChallengeCoreImpl implements IGeoChallengeCore {
 
-    private String serverIp;
-    private Socket socket;
-    private int port;
+    private final static Logger logger = Logger.getLogger(GeoChallengeCoreImpl.class);
+
+    // TODO - add socket to Impl so it can be closed
+    // TODO - add UT
+
     private OutputStreamWriter os;
     private ObjectInputStream is;
     private List<IResponseHandler> handlers;
-    private boolean connected = false;
+    private boolean connected;
 
     public GeoChallengeCoreImpl(OutputStreamWriter os, ObjectInputStream is){
         this.os = os;
         this.is = is;
-        handlers = new ArrayList<>();
+        handlers = new ArrayList<IResponseHandler>();
         connected = true;
     }
 
@@ -29,7 +31,8 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Failed reading from server");
+            terminateConnection();
         }
         return s;
     }
@@ -37,11 +40,13 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
     @Override
     public void send(String s) {
         if(connected) {
+            logger.debug(String.format("Sending '%s' to server",s));
             try {
                 os.write(s + "\n");
                 os.flush();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("Failed sending to server");
+                terminateConnection();
             }
         }
         //TODO - add not connected msg
@@ -49,12 +54,13 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
 
     private void updateHandlers(String s){
         if(handlers.size()>0) {
+            logger.debug("updating handlers with response " + s);
             for (IResponseHandler rh : handlers) {
                 rh.handle(s);
             }
         }
         else {
-            System.out.println("INFO - no handlers registered");
+            logger.info("no handlers registered");
         }
     }
 
@@ -72,11 +78,21 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
             updateHandlers(s);
             if ( s.contains("END")){
                 send("end");
-                connected = false;
+                terminateConnection();
                 break;
             }
             s = read();
         }
-        System.out.println("EXITING");
+        logger.info("game finished");
+    }
+
+    private void terminateConnection(){
+        try {
+            os.close();
+            is.close();
+        } catch (IOException e) {
+            logger.error("Failed closing connection");
+        }
+        connected = false;
     }
 }

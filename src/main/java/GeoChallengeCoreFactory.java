@@ -10,8 +10,6 @@ public class GeoChallengeCoreFactory {
         Socket socket = new Socket(serverIp, port);
         OutputStreamWriter os = new OutputStreamWriter(socket.getOutputStream());
         ObjectInputStream is = new ObjectInputStream(socket.getInputStream());
-        IGeoChallengeCore gcc = new GeoChallengeCoreImpl(os,is);
-
-        return gcc;
+        return new GeoChallengeCoreImpl(os,is);
     }
 }

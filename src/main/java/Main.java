@@ -6,7 +6,7 @@ public class Main {
         String SERVER_IP = "localhost";
         int PORT = 8888;
 
-        IGeoChallengeCore gc = null;
+        IGeoChallengeCore gc;
         try {
             gc = GeoChallengeCoreFactory.getGeoChallengeCore(SERVER_IP,PORT);
             gc.registerHandler(mockResponseHandler());
@@ -28,9 +28,8 @@ public class Main {
 
     public static IResponseHandler mockResponseHandler(){
         return new IResponseHandler() {
-            @Override
             public void handle(String s) {
-                System.out.println("recieved " + s);
+                //System.out.println("recieved " + s);
             }
         };
     }
