@@ -1,3 +1,8 @@
+import Common.GameData;
+import GeoChallengeClient.GeoChallengeCoreFactory;
+import GeoChallengeClient.IGeoChallengeCore;
+import GeoChallengeClient.IResponseHandler;
+
 import java.io.IOException;
 
 public class Main {
@@ -28,7 +33,7 @@ public class Main {
 
     public static IResponseHandler mockResponseHandler(){
         return new IResponseHandler() {
-            public void handle(String s) {
+            public void handle(GameData gameData) {
                 //System.out.println("recieved " + s);
             }
         };

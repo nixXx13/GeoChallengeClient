@@ -1,3 +1,4 @@
+package GeoChallengeClient;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
@@ -10,6 +11,6 @@ public class GeoChallengeCoreFactory {
         Socket socket = new Socket(serverIp, port);
         OutputStreamWriter os = new OutputStreamWriter(socket.getOutputStream());
         ObjectInputStream is = new ObjectInputStream(socket.getInputStream());
-        return new GeoChallengeCoreImpl(os,is);
+        return new GeoChallengeCoreImpl(socket, os,is);
     }
 }
