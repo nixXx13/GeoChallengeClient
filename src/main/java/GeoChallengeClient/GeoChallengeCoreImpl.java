@@ -1,40 +1,49 @@
+package GeoChallengeClient;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import Common.GameData;
+import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 
 public class GeoChallengeCoreImpl implements IGeoChallengeCore {
 
     private final static Logger logger = Logger.getLogger(GeoChallengeCoreImpl.class);
 
-    // TODO - add socket to Impl so it can be closed
+    // refactor to clearer code
     // TODO - add UT
 
+    private Socket socket;
     private OutputStreamWriter os;
     private ObjectInputStream is;
     private List<IResponseHandler> handlers;
     private boolean connected;
+    private Gson gson;
 
-    public GeoChallengeCoreImpl(OutputStreamWriter os, ObjectInputStream is){
+    public GeoChallengeCoreImpl(Socket socket, OutputStreamWriter os, ObjectInputStream is){
+        this.socket = socket;
         this.os = os;
         this.is = is;
         handlers = new ArrayList<IResponseHandler>();
+        gson = new Gson();
         connected = true;
     }
 
-    private String read(){
-        String s = null;
+    private GameData read(){
+        GameData gameData = null;
         try {
-            s = (String) is.readObject();
+            String s = (String) is.readObject();
+            gameData = gson.fromJson(s,GameData.class);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             logger.error("Failed reading from server");
             terminateConnection();
         }
-        return s;
+        return gameData;
     }
 
     @Override
@@ -52,11 +61,12 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
         //TODO - add not connected msg
     }
 
-    private void updateHandlers(String s){
+    private void updateHandlers(GameData gameData){
         if(handlers.size()>0) {
-            logger.debug("updating handlers with response " + s);
+            logger.debug(String.format("updating handlers with response type '%s' and content '%s'",
+                    gameData.getType(),gameData.getContent() ));
             for (IResponseHandler rh : handlers) {
-                rh.handle(s);
+                rh.handle(gameData);
             }
         }
         else {
@@ -73,15 +83,16 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
 
     @Override
     public void run() {
-        String s = read();
-        while ( s != null ){
-            updateHandlers(s);
-            if ( s.contains("END")){
+        GameData gameData = read();
+        while ( gameData != null ){
+            updateHandlers(gameData);
+            if ( gameData.getType() == GameData.GameDataType.END){
+                // use end msg before quitting
                 send("end");
                 terminateConnection();
                 break;
             }
-            s = read();
+            gameData = read();
         }
         logger.info("game finished");
     }
@@ -90,6 +101,7 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
         try {
             os.close();
             is.close();
+            socket.close();
         } catch (IOException e) {
             logger.error("Failed closing connection");
         }

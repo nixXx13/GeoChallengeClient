@@ -1,4 +1,5 @@
-interface IGeoChallengeCore extends Runnable {
+package GeoChallengeClient;
+public interface IGeoChallengeCore extends Runnable {
 
     void send(String s);
 
