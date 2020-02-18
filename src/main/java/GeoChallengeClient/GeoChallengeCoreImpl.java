@@ -23,7 +23,7 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
     private boolean connected;
     private Gson gson;
 
-    public GeoChallengeCoreImpl(Socket socket, OutputStreamWriter os, ObjectInputStream is){
+    protected GeoChallengeCoreImpl(Socket socket, OutputStreamWriter os, ObjectInputStream is){
         this.socket = socket;
         this.os = os;
         this.is = is;
