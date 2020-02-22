@@ -25,5 +25,9 @@ public class GameStage {
     public String getAnswer() {
         return answer;
     }
+
+    public List<String> getPossibleAnswers() {
+        return possibileAnswers;
+    }
 }
 

@@ -8,6 +8,7 @@ import java.util.List;
 import Common.GameData;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
+import Common.ConnectionUtils;
 
 public class GeoChallengeCoreImpl implements IGeoChallengeCore {
 
@@ -16,6 +17,8 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
     // refactor to clearer code
     // TODO - add UT
 
+    private String serverIp;
+    private int port;
     private Socket socket;
     private OutputStreamWriter os;
     private ObjectInputStream is;
@@ -23,27 +26,12 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
     private boolean connected;
     private Gson gson;
 
-    protected GeoChallengeCoreImpl(Socket socket, OutputStreamWriter os, ObjectInputStream is){
-        this.socket = socket;
-        this.os = os;
-        this.is = is;
+    protected GeoChallengeCoreImpl(String serverIp, int port){
+        this.serverIp = serverIp;
+        this.port = port;
         handlers = new ArrayList<IResponseHandler>();
         gson = new Gson();
         connected = true;
-    }
-
-    private GameData read(){
-        GameData gameData = null;
-        try {
-            String s = (String) is.readObject();
-            gameData = gson.fromJson(s,GameData.class);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            logger.error("Failed reading from server");
-            terminateConnection();
-        }
-        return gameData;
     }
 
     @Override
@@ -51,8 +39,7 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
         if(connected) {
             logger.debug(String.format("Sending '%s' to server",s));
             try {
-                os.write(s + "\n");
-                os.flush();
+                ConnectionUtils.sendString(os,s);
             } catch (IOException e) {
                 logger.error("Failed sending to server");
                 terminateConnection();
@@ -83,18 +70,37 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
 
     @Override
     public void run() {
-        GameData gameData = read();
-        while ( gameData != null ){
-            updateHandlers(gameData);
-            if ( gameData.getType() == GameData.GameDataType.END){
-                // use end msg before quitting
-                send("end");
-                terminateConnection();
-                break;
+        if (initConnection()) {
+            GameData gameData = ConnectionUtils.read(is);
+            while (gameData != null) {
+                updateHandlers(gameData);
+                if (gameData.getType() == GameData.GameDataType.END) {
+                    // use end msg before quitting
+                    send("end");
+                    terminateConnection();
+                    break;
+                }
+                gameData = ConnectionUtils.read(is);
             }
-            gameData = read();
+            terminateConnection();
+            logger.info("game finished");
         }
-        logger.info("game finished");
+    }
+
+    private boolean initConnection() {
+        try {
+            this.socket = new Socket(serverIp, port);
+            logger.debug(String.format("Socket to server ip %s:%d is initialized",serverIp,port));
+            this.os = new OutputStreamWriter(socket.getOutputStream());
+            logger.debug("output stream initialized");
+            this.is = new ObjectInputStream(socket.getInputStream());
+            logger.debug("input stream initialized");
+        } catch (IOException e) {
+            logger.error("Failed initializing connection");
+            e.printStackTrace();
+            return false;
+        }
+        return true;
     }
 
     private void terminateConnection(){
