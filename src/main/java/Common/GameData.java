@@ -35,4 +35,6 @@ public class GameData {
     public Map<String,String> getContent() {
         return content;
     }
+
+    // TODO - add toString
 }
