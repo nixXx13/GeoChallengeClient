@@ -33,7 +33,7 @@ public class Converter {
             }
             i++;
         }
-        data.put(KEY_QUESTIONS_NUMBER, String.valueOf(i));
+        data.put(KEY_QUESTIONS_NUMBER, String.valueOf(i-1));
         return data;
     }
 
@@ -41,11 +41,11 @@ public class Converter {
         List<GameStage> gameStages = new ArrayList<GameStage>();
         int question_number = Integer.parseInt(data.get(KEY_QUESTIONS_NUMBER));
         for (int i = 0; i<question_number; i++ ){
-            String question = data.get( String.format(KEY_QUESTIONS_FORMAT,i));
+            String question = data.get( String.format(KEY_QUESTIONS_FORMAT,i+1));
 
             List<String> possibleAnswers = new ArrayList<String>();
             for(int j = 0; j<4 ; j++){
-                possibleAnswers.add(data.get(String.format(KEY_POSSIBLE_ANSWER_FORMAT,i,j+1)));
+                possibleAnswers.add(data.get(String.format(KEY_POSSIBLE_ANSWER_FORMAT,i+1,j+1)));
             }
             // TODO - add shuffle
             GameStage gs = new GameStage(question,possibleAnswers,"UNKNOWN");
@@ -55,15 +55,19 @@ public class Converter {
     }
 
     public static List<GameStage> toGameStageList(String s){
+
         List<GameStage> gameStages = new ArrayList<GameStage>();
-        String[] sp = s.split(":");
-        String question = sp[0];
+        String[] questions = s.split(";");
+        for (String q : questions) {
+            String[] sp = q.split(":");
+            String question = sp[0];
 
-        String[] pp = sp[1].split(",");
-        List<String> possibleAswers = Arrays.asList(pp);
-        GameStage gameStage = new GameStage(question,possibleAswers,pp[0]);
+            String[] pp = sp[1].split(",");
+            List<String> possibleAswers = Arrays.asList(pp);
+            GameStage gameStage = new GameStage(question, possibleAswers, pp[0]);
 
-        gameStages.add(gameStage);
+            gameStages.add(gameStage);
+        }
         return gameStages;
     }
 

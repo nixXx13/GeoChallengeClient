@@ -1,6 +1,5 @@
 package Common;
 
-import GeoChallengeClient.GeoChallengeCoreImpl;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 
@@ -9,7 +8,7 @@ import java.io.*;
 public class ConnectionUtils {
 
     private static Gson gson = new Gson();
-    private final static Logger logger = Logger.getLogger(GeoChallengeCoreImpl.class);
+    private final static Logger logger = Logger.getLogger(ConnectionUtils.class);
 
     public static String readBufferReader(BufferedReader br) throws IOException {
         return br.readLine();

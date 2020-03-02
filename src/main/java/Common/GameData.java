@@ -9,11 +9,12 @@ public class GameData {
     private GameDataType type;
 
     public enum GameDataType{
-//        START,
+        ACK,
         DATA,
         UPDATE,
         GRADE,
-        END
+        END,
+        ERROR
 
     }
 
