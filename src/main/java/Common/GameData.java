@@ -13,7 +13,8 @@ public class GameData {
         DATA,
         UPDATE,
         GRADE,
-        END
+        END,
+        ERROR
 
     }
 

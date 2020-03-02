@@ -71,6 +71,11 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
             }
             gameData = serverConnector.read();
         }
+        if (gameData == null){
+            String errorMsg = "Failed reading from server";
+            GameData errorGameData = new GameData(GameData.GameDataType.ERROR,errorMsg);
+            updateHandlers(errorGameData);
+        }
         terminateConnection();
         logger.info("game finished");
     }
