@@ -37,5 +37,8 @@ public class GameData {
         return content;
     }
 
-    // TODO - add toString
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }
