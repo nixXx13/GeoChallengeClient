@@ -6,7 +6,7 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.OutputStreamWriter;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class ServerConnectorImpl implements IServerConnector{
@@ -17,7 +17,7 @@ public class ServerConnectorImpl implements IServerConnector{
     private int port;
 
     private Socket socket;
-    private OutputStreamWriter os;
+    private ObjectOutputStream os;
     private ObjectInputStream is;
 
     public ServerConnectorImpl(String ip, int port){
@@ -29,7 +29,7 @@ public class ServerConnectorImpl implements IServerConnector{
         try {
             this.socket = new Socket(ip, port);
             logger.debug(String.format("Socket to server ip %s:%d is initialized",ip,port));
-            this.os = new OutputStreamWriter(socket.getOutputStream());
+            this.os = new ObjectOutputStream(socket.getOutputStream());
             logger.debug("output stream initialized");
             this.is = new ObjectInputStream(socket.getInputStream());
             logger.debug("input stream initialized");
@@ -57,7 +57,7 @@ public class ServerConnectorImpl implements IServerConnector{
 
     public boolean send(String s) {
         try {
-            ConnectionUtils.sendString(os,s);
+            ConnectionUtils.sendObjectOutputStream(os,s);
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(String.format("failed sending to Server with ip-'%s:%d'",ip,port));

@@ -1,6 +1,7 @@
 package GeoChallengeClient;
 import java.util.ArrayList;
 import java.util.List;
+import Common.Converter;
 import Common.GameData;
 import org.apache.log4j.Logger;
 
@@ -23,10 +24,10 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
     }
 
     @Override
-    public void send(String s) {
+    public void send(GameData gameData) {
         if(connected) {
-            logger.debug(String.format("Sending '%s' to server",s));
-            if (!serverConnector.send(s)){
+            logger.debug(String.format("Sending '%s' to server",gameData.toString()));
+            if (!serverConnector.send(Converter.toJson(gameData))){
                 logger.error("Failed sending to server");
                 terminateConnection();
             }
@@ -65,7 +66,7 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
             updateHandlers(gameData);
             if (gameData.getType() == GameData.GameDataType.END) {
                 // use end msg before quitting
-                send("end");
+                send(new GameData(GameData.GameDataType.END,"end"));
                 terminateConnection();
                 break;
             }

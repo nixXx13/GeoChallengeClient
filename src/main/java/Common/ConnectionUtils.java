@@ -10,10 +10,6 @@ public class ConnectionUtils {
     private static Gson gson = new Gson();
     private final static Logger logger = Logger.getLogger(ConnectionUtils.class);
 
-    public static String readBufferReader(BufferedReader br) throws IOException {
-        return br.readLine();
-    }
-
     public static void sendObjectOutputStream(ObjectOutputStream os, String json) throws IOException {
         os.writeObject(json);
 
@@ -34,11 +30,6 @@ public class ConnectionUtils {
             logger.error("Failed reading from server");
         }
         return gameData;
-    }
-
-    public static void sendString(OutputStreamWriter os,String s) throws IOException {
-        os.write(s + "\n");
-        os.flush();
     }
 
 }
