@@ -1,8 +1,8 @@
 package GeoChallengeClient;
 import java.util.ArrayList;
 import java.util.List;
-import Common.Converter;
 import Common.GameData;
+import Common.INetworkConnector;
 import org.apache.log4j.Logger;
 
 public class GeoChallengeCoreImpl implements IGeoChallengeCore {
@@ -12,11 +12,11 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
     // refactor to clearer code
     // TODO - add UT
 
-    private IServerConnector serverConnector;
+    private INetworkConnector serverConnector;
     private List<IResponseHandler> handlers;
     private boolean connected;
 
-    protected GeoChallengeCoreImpl(IServerConnector serverConnector){
+    protected GeoChallengeCoreImpl(INetworkConnector serverConnector){
         this.serverConnector = serverConnector;
 
         handlers = new ArrayList<IResponseHandler>();
@@ -27,7 +27,7 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
     public void send(GameData gameData) {
         if(connected) {
             logger.debug(String.format("Sending '%s' to server",gameData.toString()));
-            if (!serverConnector.send(Converter.toJson(gameData))){
+            if (!serverConnector.send(gameData)){
                 logger.error("Failed sending to server");
                 terminateConnection();
             }

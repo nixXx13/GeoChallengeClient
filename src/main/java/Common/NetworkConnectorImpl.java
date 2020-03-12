@@ -1,17 +1,16 @@
-package GeoChallengeClient;
+package Common;
 
-import Common.ConnectionUtils;
-import Common.GameData;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.List;
 
-public class ServerConnectorImpl implements IServerConnector{
+public class NetworkConnectorImpl implements INetworkConnector {
 
-    private final static Logger logger = Logger.getLogger(ServerConnectorImpl.class);
+    private final static Logger logger = Logger.getLogger(NetworkConnectorImpl.class);
 
     private String ip;
     private int port;
@@ -20,15 +19,23 @@ public class ServerConnectorImpl implements IServerConnector{
     private ObjectOutputStream os;
     private ObjectInputStream is;
 
-    public ServerConnectorImpl(String ip, int port){
+    public NetworkConnectorImpl(String ip, int port){
         this.ip = ip;
         this.port = port;
+        this.socket = null;
+    }
+
+    public NetworkConnectorImpl(Socket socket){
+        this.socket = socket;
     }
 
     public boolean init(){
+
         try {
-            this.socket = new Socket(ip, port);
-            logger.debug(String.format("Socket to server ip %s:%d is initialized",ip,port));
+            if(socket == null){
+                this.socket = new Socket(ip, port);
+                logger.debug(String.format("Socket to server ip %s:%d is initialized",ip,port));
+            }
             this.os = new ObjectOutputStream(socket.getOutputStream());
             logger.debug("output stream initialized");
             this.is = new ObjectInputStream(socket.getInputStream());
@@ -55,7 +62,17 @@ public class ServerConnectorImpl implements IServerConnector{
         return ConnectionUtils.read(is);
     }
 
-    public boolean send(String s) {
+    public boolean send(List<GameStage> gameStages) {
+        String json = Converter.toJson(gameStages);
+        return send(json);
+    }
+
+    public boolean send(GameData gameData){
+        String json = Converter.toJson(gameData);
+        return send(json);
+    }
+
+    private boolean send(String s) {
         try {
             ConnectionUtils.sendObjectOutputStream(os,s);
         } catch (IOException e) {
