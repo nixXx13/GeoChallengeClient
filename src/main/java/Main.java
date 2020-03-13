@@ -20,6 +20,8 @@ public class Main {
 
         Thread.sleep(1000);
 
+        gc.send(new GameData(GameData.GameDataType.ACK,"name is nir"));
+        Thread.sleep(1000);
         gc.send(answerGameData("1",1f));
         Thread.sleep(1000);
         gc.send(answerGameData("2",1f));

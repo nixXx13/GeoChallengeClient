@@ -9,9 +9,6 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
 
     private final static Logger logger = Logger.getLogger(GeoChallengeCoreImpl.class);
 
-    // refactor to clearer code
-    // TODO - add UT
-
     private INetworkConnector serverConnector;
     private List<IResponseHandler> handlers;
     private boolean connected;
@@ -25,14 +22,15 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
 
     @Override
     public void send(GameData gameData) {
-        if(connected) {
-            logger.debug(String.format("Sending '%s' to server",gameData.toString()));
-            if (!serverConnector.send(gameData)){
-                logger.error("Failed sending to server");
-                terminateConnection();
-            }
+        if(!connected) {
+            logger.warn("Connection to server isnt active");
+            return;
         }
-        //TODO - add not connected msg
+        logger.debug(String.format("Sending '%s' to server",gameData.toString()));
+        if (!serverConnector.send(gameData)){
+            logger.error("Failed sending to server");
+            terminateConnection();
+        }
     }
 
     private void updateHandlers(GameData gameData){
@@ -67,7 +65,6 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
             if (gameData.getType() == GameData.GameDataType.END) {
                 // use end msg before quitting
                 send(new GameData(GameData.GameDataType.END,"end"));
-                terminateConnection();
                 break;
             }
             gameData = serverConnector.read();

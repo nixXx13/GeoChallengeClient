@@ -9,7 +9,6 @@ public class Converter {
     private static final String KEY_QUESTIONS_NUMBER = "qNum";
     private static final String KEY_QUESTIONS_FORMAT = "q%s";
     private static final String KEY_POSSIBLE_ANSWER_FORMAT = "p%d_%d";
-    // TODO - add UT
     private static Gson gson = new Gson();
 
     public static String toJson(GameData gameData){

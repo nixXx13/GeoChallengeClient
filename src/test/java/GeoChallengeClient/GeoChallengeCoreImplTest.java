@@ -1,52 +1,58 @@
-//package GeoChallengeClient;
-//
-//import Common.GameData;
-//import org.junit.jupiter.api.Test;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//import static org.mockito.ArgumentMatchers.anyString;
-//import static org.mockito.Mockito.mock;
-//import static org.mockito.Mockito.when;
-//
-//class GeoChallengeCoreImplTest {
-//
+package GeoChallengeClient;
+
+import Common.GameData;
+import Common.INetworkConnector;
+import Common.NetworkConnectorImpl;
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+class GeoChallengeCoreImplTest {
+
+    @Test
+    void serverConnectionErrorTest() {
+        INetworkConnector nc = getNetworkConnectorMock();
+        when(nc.read()).thenReturn(null);
+        when(nc.send(any(GameData.class))).thenThrow(new NullPointerException("send shouldn't be called!"));
+        GeoChallengeCoreImpl geoChallengeCore = new GeoChallengeCoreImpl(nc);
+
+        TestResponseHandler testResponseHandler = new TestResponseHandler();
+        geoChallengeCore.registerHandler(testResponseHandler);
+        geoChallengeCore.run();
+        geoChallengeCore.send(null);
+
+        assertEquals(GameData.GameDataType.ERROR,testResponseHandler.getGameData().get(0).getType());
+    }
+
 //    @Test
-//    void playerUpdate() throws InterruptedException {
-//
-//        ServerConnectorImpl serverConnector = mock(ServerConnectorImpl.class);
-//        when(serverConnector.init()).thenReturn(true);
-//        when(serverConnector.send(anyString())).thenReturn(true);
-//        when(serverConnector.read()).thenReturn(new GameData(GameData.GameDataType.END,""));
-//
-//        GeoChallengeCoreImpl geoChallengeCore =  new GeoChallengeCoreImpl(serverConnector);
-//
-//        TestResponseHandler testResponseHandler = new TestResponseHandler();
-//        geoChallengeCore.registerHandler(testResponseHandler);
-//
-//        Thread t = new Thread(geoChallengeCore);
-//        t.start();
-//
-//        Thread.sleep(1000);
-//
-//        List<GameData> gameData = testResponseHandler.getGameData();
-//        assertEquals(gameData.get(0).getType(), GameData.GameDataType.END);
+//    void receivingEndTest() {
+//        // TODO
 //    }
-//
-//
-//    class TestResponseHandler implements IResponseHandler{
-//
-//        private ArrayList<GameData> gameDataList = new ArrayList<GameData>();
-//
-//        public void handle(GameData gameData) {
-//            gameDataList.add(gameData);
-//        }
-//
-//        public ArrayList<GameData> getGameData() {
-//            return gameDataList;
-//        }
-//    }
-//
-//}
+
+
+    class TestResponseHandler implements IResponseHandler{
+
+        private ArrayList<GameData> gameDataList = new ArrayList<GameData>();
+
+        public void handle(GameData gameData) {
+            gameDataList.add(gameData);
+        }
+
+        public ArrayList<GameData> getGameData() {
+            return gameDataList;
+        }
+    }
+
+    private static INetworkConnector getNetworkConnectorMock(){
+        NetworkConnectorImpl nc = mock(NetworkConnectorImpl.class);
+        when(nc.init()).thenReturn(true);
+        when(nc.send(any(GameData.class))).thenReturn(true);
+        return nc;
+    }
+
+}
