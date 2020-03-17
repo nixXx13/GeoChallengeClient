@@ -10,7 +10,7 @@ public class Main {
 
     public static void main(String[] args) throws InterruptedException {
         String SERVER_IP = "localhost";
-        int PORT = 8888;
+        int PORT = 4567;
 
         IGeoChallengeCore gc;
         gc = GeoChallengeCoreFactory.getGeoChallengeCore(SERVER_IP,PORT);
@@ -18,9 +18,9 @@ public class Main {
         Thread t = new Thread(gc);
         t.start();
 
-        Thread.sleep(1000);
+//        Thread.sleep(10000);
 
-        gc.send(new GameData(GameData.GameDataType.ACK,"name is nir"));
+//        gc.send(new GameData(GameData.GameDataType.ACK,"name is nir"));
         Thread.sleep(1000);
         gc.send(answerGameData("1",1f));
         Thread.sleep(1000);
