@@ -46,7 +46,7 @@ public class Converter {
             for(int j = 0; j<4 ; j++){
                 possibleAnswers.add(data.get(String.format(KEY_POSSIBLE_ANSWER_FORMAT,i+1,j+1)));
             }
-            // TODO - add shuffle
+            Collections.shuffle(possibleAnswers);
             GameStage gs = new GameStage(question,possibleAnswers,"UNKNOWN");
             gameStages.add(gs);
         }
