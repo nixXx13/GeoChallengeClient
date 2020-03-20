@@ -46,7 +46,7 @@ public class Converter {
             for(int j = 0; j<4 ; j++){
                 possibleAnswers.add(data.get(String.format(KEY_POSSIBLE_ANSWER_FORMAT,i+1,j+1)));
             }
-            Collections.shuffle(possibleAnswers);
+
             GameStage gs = new GameStage(question,possibleAnswers,"UNKNOWN");
             gameStages.add(gs);
         }
@@ -62,8 +62,10 @@ public class Converter {
             String question = sp[0];
 
             String[] pp = sp[1].split(",");
-            List<String> possibleAswers = Arrays.asList(pp);
-            GameStage gameStage = new GameStage(question, possibleAswers, pp[0]);
+            String answer = pp[0];
+            List<String> possibleAnswers = Arrays.asList(pp);
+            Collections.shuffle(possibleAnswers);
+            GameStage gameStage = new GameStage(question, possibleAnswers, answer);
 
             gameStages.add(gameStage);
         }
