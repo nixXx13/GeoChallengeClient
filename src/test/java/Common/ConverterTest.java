@@ -30,18 +30,11 @@ class ConverterTest {
         GameStage gameStage1 = questions.get(0);
         assertEquals(q+"1",gameStage1.getQuestion());
         assertEquals(p1,gameStage1.getAnswer());
-//        assertEquals(p1,gameStage1.getPossibleAnswers().get(0));
-//        assertEquals(p2,gameStage1.getPossibleAnswers().get(1));
-//        assertEquals(p3,gameStage1.getPossibleAnswers().get(2));
-//        assertEquals(p4,gameStage1.getPossibleAnswers().get(3));
+
 
         GameStage gameStage2 = questions.get(1);
         assertEquals(q+"2",gameStage2.getQuestion());
         assertEquals(p4,gameStage2.getAnswer());
-//        assertEquals(p4,gameStage2.getPossibleAnswers().get(0));
-//        assertEquals(p3,gameStage2.getPossibleAnswers().get(1));
-//        assertEquals(p2,gameStage2.getPossibleAnswers().get(2));
-//        assertEquals(p1,gameStage2.getPossibleAnswers().get(3));
     }
 
     @Test
