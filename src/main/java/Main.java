@@ -9,8 +9,8 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-//        String SERVER_IP = "18.195.215.39";
-        String SERVER_IP = "localhost";
+        String SERVER_IP = "18.195.215.39";
+//        String SERVER_IP = "localhost";
         int PORT = 4567;
 
         IGeoChallengeCore gc;
@@ -19,10 +19,6 @@ public class Main {
         Thread t = new Thread(gc);
         t.start();
 
-        Thread.sleep(1000);
-        gc.send(new GameData(GameData.GameDataType.ACK,"Nir:newRoom:true:1:5:GEO"));
-//        gc.send(new GameData(GameData.GameDataType.ACK,"Nir:TheRoom:true:2:5:GEO"));
-//        gc.send(new GameData(GameData.GameDataType.ACK,"Rose:TheRoom:false:2:5:GEO"));
         t.join();
     }
 
@@ -45,6 +41,11 @@ public class Main {
                      } catch (InterruptedException e) {
                          e.printStackTrace();
                      }
+                 }
+                 if(gameData.getType().equals(GameData.GameDataType.ACK)){
+                 //        gc.send(new GameData(GameData.GameDataType.ACK,"Nir:newRoom:true:1:5:GEO"));
+                        gc.send(new GameData(GameData.GameDataType.ACK,"Nir:TheRoom:true:2:5:GEO"));
+//                        gc.send(new GameData(GameData.GameDataType.ACK,"Nir2:TheRoom:false:2:5:GEO"));
                  }
             }
         };
