@@ -59,6 +59,8 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
             logger.error("Failed initializing connection");
             return;
         }
+        // TODO - add acks as constants
+        updateHandlers(new GameData(GameData.GameDataType.ACK,"Connected"));
         GameData gameData = serverConnector.read();
         while (gameData != null) {
             updateHandlers(gameData);
