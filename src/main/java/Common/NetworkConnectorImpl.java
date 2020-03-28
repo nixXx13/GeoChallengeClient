@@ -37,9 +37,9 @@ public class NetworkConnectorImpl implements INetworkConnector {
                 logger.debug(String.format("Socket to server ip %s:%d is initialized",ip,port));
             }
             this.os = new ObjectOutputStream(socket.getOutputStream());
-            logger.debug("output stream initialized");
+            logger.trace("output stream initialized");
             this.is = new ObjectInputStream(socket.getInputStream());
-            logger.debug("input stream initialized");
+            logger.trace("input stream initialized");
         } catch (IOException e) {
             e.printStackTrace();
             logger.error(String.format("failed initializing Server connector with ip-'%s:%d'",ip,port));

@@ -18,9 +18,7 @@ public class Main {
         Thread t = new Thread(gc);
         t.start();
 
-//        Thread.sleep(10000);
-
-//        gc.send(new GameData(GameData.GameDataType.ACK,"name is nir"));
+        gc.send(new GameData(GameData.GameDataType.ACK,"Nir:newRoom:true:1:5:GEO"));
         Thread.sleep(1000);
         gc.send(answerGameData("1",1f));
         Thread.sleep(1000);
@@ -31,7 +29,6 @@ public class Main {
         gc.send(answerGameData("4",1f));
         Thread.sleep(1000);
         gc.send(answerGameData("5",1f));
-        Thread.sleep(1000);
 
     }
 
@@ -45,7 +42,8 @@ public class Main {
     public static IResponseHandler mockResponseHandler(){
         return new IResponseHandler() {
             public void handle(GameData gameData) {
-                //System.out.println("recieved " + s);
+//                System.out.println("recieved " + gameData.toString());
+//                 if data , gc.send
             }
         };
     }
