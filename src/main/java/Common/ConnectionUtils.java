@@ -11,6 +11,7 @@ class ConnectionUtils {
     private final static Logger logger = Logger.getLogger(ConnectionUtils.class);
 
     static void sendObjectOutputStream(ObjectOutputStream os, String json) throws IOException {
+        logger.trace(String.format("Sending '%s'" ,json));
         os.writeObject(json);
 
         PrintStream ps = new PrintStream(os);
@@ -23,10 +24,12 @@ class ConnectionUtils {
         GameData gameData = null;
         try {
             String s = (String) is.readObject();
+            logger.trace(String.format("Received '%s'",s));
             gameData = gson.fromJson(s,GameData.class);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
             logger.error("Failed reading from server");
         }
         return gameData;

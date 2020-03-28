@@ -23,7 +23,7 @@ public class GeoChallengeCoreImpl implements IGeoChallengeCore {
     @Override
     public void send(GameData gameData) {
         if(!connected) {
-            logger.warn("Connection to server isnt active");
+            logger.warn("Connection to server isn't active");
             return;
         }
         logger.debug(String.format("Sending '%s' to server",gameData.toString()));

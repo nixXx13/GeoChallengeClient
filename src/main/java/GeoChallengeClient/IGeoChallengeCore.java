@@ -7,4 +7,5 @@ public interface IGeoChallengeCore extends Runnable {
 
     void registerHandler(IResponseHandler responseHandler);
 
+    // TODO - add disconnect
 }
