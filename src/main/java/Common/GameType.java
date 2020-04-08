@@ -6,6 +6,7 @@ public class GameType {
     public enum GameTypeEnum{
         GEO,
         TEST,
+        MATH,
     }
 
 }
